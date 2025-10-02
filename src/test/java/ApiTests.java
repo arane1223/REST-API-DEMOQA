@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -84,6 +85,24 @@ public class ApiTests extends TestBase{
                 .log().body()
                 .statusCode(400)
                 .body("message", is("UserName and Password required."));
+    }
+
+    @Test
+    @DisplayName("Повторная регистрация уже зарегистрированного пользователя")
+    void userReRegistrationTest() {
+        given()
+                .body(authCorrectData).
+                contentType(JSON)
+                .log().uri()
+
+                .when()
+                .post("/Account/v1/User")
+
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(406)
+                .body("message",is("User exists!"));
     }
 
     @Test
