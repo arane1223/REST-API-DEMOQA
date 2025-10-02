@@ -3,8 +3,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.JSON;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @DisplayName("API тесты на DEMOQA")
 public class ApiTests extends TestBase{
@@ -96,6 +95,7 @@ public class ApiTests extends TestBase{
                 .log().status()
                 .log().body()
                 .statusCode(200)
+                .body("books.title", hasSize(books.size()))
                 .body("books.title", hasItems(books.toArray(new String[0])));
     }
 }
