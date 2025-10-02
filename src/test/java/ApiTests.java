@@ -25,8 +25,8 @@ public class ApiTests extends TestBase{
                 .log().status()
                 .log().body()
                 .statusCode(200)
-                .body("status", is("Success"))
-                .body("result", is("User authorized successfully."));
+                .body("status", is("Success"),
+                        "result", is("User authorized successfully."));
     }
 
     @Test
@@ -45,8 +45,8 @@ public class ApiTests extends TestBase{
                 .log().status()
                 .log().body()
                 .statusCode(200)
-                .body("status", is("Failed"))
-                .body("result", is("User authorization failed."));
+                .body("status", is("Failed"),
+                        "result", is("User authorization failed."));
     }
 
     @Test
@@ -65,7 +65,8 @@ public class ApiTests extends TestBase{
                 .log().status()
                 .log().body()
                 .statusCode(404)
-                .body("message", is("User not found!"));
+                .body("code", is("1207"),
+                        "message", is("User not found!"));
     }
 
     @Test
@@ -84,7 +85,8 @@ public class ApiTests extends TestBase{
                 .log().status()
                 .log().body()
                 .statusCode(400)
-                .body("message", is("UserName and Password required."));
+                .body("code", is("1200"),
+                        "message", is("UserName and Password required."));
     }
 
     @Test
@@ -102,7 +104,8 @@ public class ApiTests extends TestBase{
                 .log().status()
                 .log().body()
                 .statusCode(406)
-                .body("message",is("User exists!"));
+                .body("code", is("1204"),
+                        "message",is("User exists!"));
     }
 
     @Test
@@ -114,7 +117,7 @@ public class ApiTests extends TestBase{
                 .log().status()
                 .log().body()
                 .statusCode(200)
-                .body("books.title", hasSize(books.size()))
-                .body("books.title", hasItems(books.toArray(new String[0])));
+                .body("books.title", hasSize(books.size()),
+                        "books.title", hasItems(books.toArray(new String[0])));
     }
 }
