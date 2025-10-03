@@ -1,4 +1,3 @@
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +33,7 @@ public class ApiTests extends TestBase{
     void unsuccessfulLoginWithTokenTest() {
 
         given()
-                .body(authUncorrectData)
+                .body(authIncorrectData)
                 .contentType(JSON)
                 .log().uri()
 
@@ -54,7 +53,7 @@ public class ApiTests extends TestBase{
     void userNotFoundTest() {
 
         given()
-                .body(authUncorrectData)
+                .body(authIncorrectData)
                 .contentType(JSON)
                 .log().uri()
 
