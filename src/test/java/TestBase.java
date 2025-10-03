@@ -6,7 +6,7 @@ import java.util.List;
 public class TestBase {
     String
             authCorrectData = "{\"userName\": \"AlexTerrible\", \"password\": \"Qwer!1234\"}",
-            authUncorrectData = "{\"userName\": \"AlexTerrible\", \"password\": \"Qwer!\"}",
+            authIncorrectData = "{\"userName\": \"AlexTerrible\", \"password\": \"Qwer!\"}",
             emptyData = "";
 
     List<String> books = List.of(
