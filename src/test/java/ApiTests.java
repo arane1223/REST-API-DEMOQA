@@ -150,4 +150,20 @@ public class ApiTests extends TestBase {
                 .body("books.title", hasSize(books.size()),
                         "books.title", hasItems(books.toArray(new String[0])));
     }
+
+    @Test
+    @DisplayName("Проверка характеристик книги по ISBN")
+    void checkingBookCharacteristicsByIsbnTest() {
+        get("/BookStore/v1/Book?ISBN=9781449325862")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .body("title", is("Git Pocket Guide"),
+                        "subTitle", is("A Working Introduction"),
+                        "author", is("Richard E. Silverman"),
+                        "publish_date", is("2020-06-04T08:48:39.000Z"),
+                        "publisher", is("O'Reilly Media"),
+                        "pages", is(234));
+    }
 }
