@@ -93,6 +93,7 @@ public class ApiTests extends TestBase {
                 .body("code", is("1204"),
                         "message", is("User exists!"));
     }
+
     @Test
     @DisplayName("Успешное добавление и удаление нового пользователя")
     void addAndDeleteUserTest() {
