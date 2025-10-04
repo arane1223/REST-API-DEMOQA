@@ -8,7 +8,7 @@ public class TestBase {
             authCorrectData = "{\"userName\": \"AlexTerrible\", \"password\": \"Qwer!1234\"}",
             authIncorrectData = "{\"userName\": \"AlexTerrible\", \"password\": \"Qwer!\"}",
             newUser = "newUser",
-            newUserData = "{\"userName\": \""+newUser+"\", \"password\": \"Qwer!1234\"}",
+            newUserData = "{\"userName\": \"" + newUser + "\", \"password\": \"Qwer!1234\"}",
             userId,
             emptyData = "";
 
