@@ -1,3 +1,4 @@
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -80,8 +81,8 @@ public class ApiTests extends TestBase {
     @DisplayName("Повторная регистрация уже зарегистрированного пользователя")
     void userReRegistrationTest() {
         given()
-                .body(authCorrectData).
-                contentType(JSON)
+                .body(authCorrectData)
+                .contentType(JSON)
                 .log().uri()
                 .when()
                 .post("/Account/v1/User")
@@ -91,6 +92,50 @@ public class ApiTests extends TestBase {
                 .statusCode(406)
                 .body("code", is("1204"),
                         "message", is("User exists!"));
+    }
+    @Test
+    @DisplayName("Успешное добавление и удаление нового пользователя")
+    void addAndDeleteUserTest() {
+        Response createResponse = given()
+                .body(newUserData)
+                .contentType(JSON)
+                .log().uri()
+                .when()
+                .post("/Account/v1/User")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(201)
+                .body("username", is(newUser))
+                .extract().response();
+
+        userId = createResponse.path("userID");
+
+        Response tokenResponse = given()
+                .body(newUserData)
+                .contentType(JSON)
+                .log().uri()
+                .when()
+                .post("/Account/v1/GenerateToken")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .body("status", is("Success"))
+                .extract().response();
+
+        String token = tokenResponse.path("token");
+
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(JSON)
+                .log().uri()
+                .when()
+                .delete("/Account/v1/User/" + userId)
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(204);
     }
 
     @Test
