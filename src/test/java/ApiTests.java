@@ -1,3 +1,4 @@
+import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -6,20 +7,17 @@ import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("API тесты на DEMOQA")
-public class ApiTests extends TestBase{
+public class ApiTests extends TestBase {
 
     @Test
     @DisplayName("Тест на успешную авторизацию")
     void successfulLoginWithTokenTest() {
-
         given()
                 .body(authCorrectData)
                 .contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/GenerateToken")
-
                 .then()
                 .log().status()
                 .log().body()
@@ -31,15 +29,12 @@ public class ApiTests extends TestBase{
     @Test
     @DisplayName("Тест на неуспешную авторизацию")
     void unsuccessfulLoginWithTokenTest() {
-
         given()
                 .body(authIncorrectData)
                 .contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/GenerateToken")
-
                 .then()
                 .log().status()
                 .log().body()
@@ -51,15 +46,12 @@ public class ApiTests extends TestBase{
     @Test
     @DisplayName("Тест на отсутствие пользователя")
     void userNotFoundTest() {
-
         given()
                 .body(authIncorrectData)
                 .contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/Authorized")
-
                 .then()
                 .log().status()
                 .log().body()
@@ -71,15 +63,12 @@ public class ApiTests extends TestBase{
     @Test
     @DisplayName("Авторизация с пустыми полями")
     void loginWithEmptyDataTest() {
-
         given()
                 .body(emptyData)
                 .contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/Authorized")
-
                 .then()
                 .log().status()
                 .log().body()
@@ -92,26 +81,67 @@ public class ApiTests extends TestBase{
     @DisplayName("Повторная регистрация уже зарегистрированного пользователя")
     void userReRegistrationTest() {
         given()
-                .body(authCorrectData).
-                contentType(JSON)
+                .body(authCorrectData)
+                .contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/User")
-
                 .then()
                 .log().status()
                 .log().body()
                 .statusCode(406)
                 .body("code", is("1204"),
-                        "message",is("User exists!"));
+                        "message", is("User exists!"));
+    }
+    @Test
+    @DisplayName("Успешное добавление и удаление нового пользователя")
+    void addAndDeleteUserTest() {
+        Response createResponse = given()
+                .body(newUserData)
+                .contentType(JSON)
+                .log().uri()
+                .when()
+                .post("/Account/v1/User")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(201)
+                .body("username", is(newUser))
+                .extract().response();
+
+        userId = createResponse.path("userID");
+
+        Response tokenResponse = given()
+                .body(newUserData)
+                .contentType(JSON)
+                .log().uri()
+                .when()
+                .post("/Account/v1/GenerateToken")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(200)
+                .body("status", is("Success"))
+                .extract().response();
+
+        String token = tokenResponse.path("token");
+
+        given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(JSON)
+                .log().uri()
+                .when()
+                .delete("/Account/v1/User/" + userId)
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(204);
     }
 
     @Test
     @DisplayName("Проверка библиотеки книг по названиям")
     void getUserAccountID() {
         get("/BookStore/v1/Books")
-
                 .then()
                 .log().status()
                 .log().body()
