@@ -6,20 +6,17 @@ import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("API тесты на DEMOQA")
-public class ApiTests extends TestBase{
+public class ApiTests extends TestBase {
 
     @Test
     @DisplayName("Тест на успешную авторизацию")
     void successfulLoginWithTokenTest() {
-
         given()
                 .body(authCorrectData)
                 .contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/GenerateToken")
-
                 .then()
                 .log().status()
                 .log().body()
@@ -31,15 +28,12 @@ public class ApiTests extends TestBase{
     @Test
     @DisplayName("Тест на неуспешную авторизацию")
     void unsuccessfulLoginWithTokenTest() {
-
         given()
                 .body(authIncorrectData)
                 .contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/GenerateToken")
-
                 .then()
                 .log().status()
                 .log().body()
@@ -51,15 +45,12 @@ public class ApiTests extends TestBase{
     @Test
     @DisplayName("Тест на отсутствие пользователя")
     void userNotFoundTest() {
-
         given()
                 .body(authIncorrectData)
                 .contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/Authorized")
-
                 .then()
                 .log().status()
                 .log().body()
@@ -71,15 +62,12 @@ public class ApiTests extends TestBase{
     @Test
     @DisplayName("Авторизация с пустыми полями")
     void loginWithEmptyDataTest() {
-
         given()
                 .body(emptyData)
                 .contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/Authorized")
-
                 .then()
                 .log().status()
                 .log().body()
@@ -95,23 +83,20 @@ public class ApiTests extends TestBase{
                 .body(authCorrectData).
                 contentType(JSON)
                 .log().uri()
-
                 .when()
                 .post("/Account/v1/User")
-
                 .then()
                 .log().status()
                 .log().body()
                 .statusCode(406)
                 .body("code", is("1204"),
-                        "message",is("User exists!"));
+                        "message", is("User exists!"));
     }
 
     @Test
     @DisplayName("Проверка библиотеки книг по названиям")
     void getUserAccountID() {
         get("/BookStore/v1/Books")
-
                 .then()
                 .log().status()
                 .log().body()
