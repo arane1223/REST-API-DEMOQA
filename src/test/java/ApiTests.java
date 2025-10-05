@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.*;
 public class ApiTests extends TestBase {
 
     @Test
-    @DisplayName("Тест на успешную авторизацию")
+    @DisplayName("Успешная авторизация и получение токена")
     void successfulLoginWithTokenTest() {
         given()
                 .body(authCorrectData)
@@ -27,7 +27,7 @@ public class ApiTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Тест на неуспешную авторизацию")
+    @DisplayName("Неуспешная авторизация")
     void unsuccessfulLoginWithTokenTest() {
         given()
                 .body(authIncorrectData)
@@ -44,7 +44,7 @@ public class ApiTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Тест на отсутствие пользователя")
+    @DisplayName("Неуспешная авторизация отсутствующего пользователя")
     void userNotFoundTest() {
         given()
                 .body(authIncorrectData)
@@ -61,7 +61,7 @@ public class ApiTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Авторизация с пустыми полями")
+    @DisplayName("Неуспешная авторизация с пустыми полями")
     void loginWithEmptyDataTest() {
         given()
                 .body(emptyData)
@@ -78,7 +78,7 @@ public class ApiTests extends TestBase {
     }
 
     @Test
-    @DisplayName("Повторная регистрация уже зарегистрированного пользователя")
+    @DisplayName("Неуспешная повторная регистрация уже зарегистрированного пользователя")
     void userReRegistrationTest() {
         given()
                 .body(authCorrectData)
