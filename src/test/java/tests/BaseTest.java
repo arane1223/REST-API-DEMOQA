@@ -1,16 +1,19 @@
+package tests;
+
 import io.restassured.RestAssured;
+import io.restassured.parsing.Parser;
+import models.LoginBodyModel;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.util.List;
 
-public class TestBase {
-    String
-            authCorrectData = "{\"userName\": \"AlexTerrible\", \"password\": \"Qwer!1234\"}",
-            authIncorrectData = "{\"userName\": \"AlexTerrible\", \"password\": \"Qwer!\"}",
-            newUser = "newUser",
-            newUserData = "{\"userName\": \"" + newUser + "\", \"password\": \"Qwer!1234\"}",
-            userId,
-            emptyData = "";
+public class BaseTest {
+
+    LoginBodyModel
+            authCorrectData = new LoginBodyModel("AlexTerrible", "Qwer!1234"),
+            authIncorrectData = new LoginBodyModel("AlexTerrible", "Qwer!"),
+            emptyData = new LoginBodyModel("", ""),
+            newUserData = new LoginBodyModel("newUser", "Qwer!1234");
 
     List<String> books = List.of(
             "Git Pocket Guide",
