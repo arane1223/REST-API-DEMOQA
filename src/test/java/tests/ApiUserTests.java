@@ -7,10 +7,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static helpers.CustomAllureListener.withCustomTemplates;
+import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static specs.LoginSpec.loginAndTokenSpec;
+import static specs.LoginSpec.loginResponseSpec;
 
 @Owner("sergeyglukhov")
 @DisplayName("API тесты с данными пользователей на DEMOQA")
@@ -19,23 +22,19 @@ public class ApiUserTests extends BaseTest {
     @Test
     @DisplayName("Успешная авторизация и получение токена")
     void successfulLoginWithTokenTest() {
-        LoginResponseModel response = given()
-                .filter(withCustomTemplates())
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .body(authCorrectData)
-                .contentType(JSON)
-                .when()
-                .post("/Account/v1/GenerateToken")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .extract().as(LoginResponseModel.class);
+        LoginResponseModel response = step("Отправить запрос на авторизацию с получением токена", () ->
+                given(loginAndTokenSpec)
+                        .body(authCorrectData)
+                        .when()
+                        .post()
+                        .then()
+                        .spec(loginResponseSpec)
+                        .extract().as(LoginResponseModel.class));
 
-        assertEquals("Success", response.getStatus());
-        assertEquals("User authorized successfully.", response.getResult());
+        step("Проверить ответ", () -> {
+            assertEquals("Success", response.getStatus());
+            assertEquals("User authorized successfully.", response.getResult());
+        });
     }
 
     @Test
