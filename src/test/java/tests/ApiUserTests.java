@@ -1,19 +1,16 @@
 package tests;
 
 import io.qameta.allure.Owner;
-import io.restassured.response.Response;
+import models.CodeMessageResponseModel;
 import models.LoginResponseModel;
+import models.UserResponseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static helpers.CustomAllureListener.withCustomTemplates;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.*;
-import static io.restassured.http.ContentType.JSON;
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static specs.LoginSpec.loginAndTokenSpec;
-import static specs.LoginSpec.loginResponseSpec;
+import static specs.LoginSpec.*;
 
 @Owner("sergeyglukhov")
 @DisplayName("API тесты с данными пользователей на DEMOQA")
@@ -22,8 +19,8 @@ public class ApiUserTests extends BaseTest {
     @Test
     @DisplayName("Успешная авторизация и получение токена")
     void successfulLoginWithTokenTest() {
-        LoginResponseModel response = step("Отправить запрос на авторизацию с получением токена", () ->
-                given(loginAndTokenSpec)
+        LoginResponseModel response = step("Отправить запрос на авторизацию", () ->
+                given(genTokenSpec)
                         .body(authCorrectData)
                         .when()
                         .post()
@@ -40,130 +37,125 @@ public class ApiUserTests extends BaseTest {
     @Test
     @DisplayName("Неуспешная авторизация")
     void unsuccessfulLoginWithTokenTest() {
-        LoginResponseModel response = given()
-                .filter(withCustomTemplates())
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .body(authIncorrectData)
-                .contentType(JSON)
-                .when()
-                .post("/Account/v1/GenerateToken")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .extract().as(LoginResponseModel.class);
+        LoginResponseModel response = step("Отправить запрос на авторизацию", () ->
+                given(genTokenSpec)
+                        .body(authIncorrectData)
+                        .when()
+                        .post()
+                        .then()
+                        .spec(loginResponseSpec)
+                        .extract().as(LoginResponseModel.class));
 
-        assertEquals("Failed", response.getStatus());
-        assertEquals("User authorization failed.", response.getResult());
+        step("Проверить ответ", () -> {
+            assertEquals("Failed", response.getStatus());
+            assertEquals("User authorization failed.", response.getResult());
+        });
     }
 
     @Test
     @DisplayName("Неуспешная авторизация отсутствующего пользователя")
     void userNotFoundTest() {
-        given()
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .body(authIncorrectData)
-                .contentType(JSON)
-                .when()
-                .post("/Account/v1/Authorized")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(404)
-                .body("code", is("1207"),
-                        "message", is("User not found!"));
+        CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
+                given(authSpec)
+                        .body(authIncorrectData)
+                        .when()
+                        .post()
+                        .then()
+                        .spec(notFoundResponseSpec)
+                        .extract().as(CodeMessageResponseModel.class));
+
+        step("Проверить ответ", () -> {
+            assertEquals("1207", response.getCode());
+            assertEquals("User not found!", response.getMessage());
+        });
     }
 
     @Test
     @DisplayName("Неуспешная авторизация с пустыми полями")
     void loginWithEmptyDataTest() {
-        given()
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .body(emptyData)
-                .contentType(JSON)
-                .when()
-                .post("/Account/v1/Authorized")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(400)
-                .body("code", is("1200"),
-                        "message", is("UserName and Password required."));
+        CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
+                given(authSpec)
+                        .body(emptyData)
+                        .when()
+                        .post()
+                        .then()
+                        .spec(emptyDataResponseSpec)
+                        .extract().as(CodeMessageResponseModel.class));
+
+        step("Проверить ответ", () -> {
+            assertEquals("1200", response.getCode());
+            assertEquals("UserName and Password required.", response.getMessage());
+        });
     }
 
     @Test
     @DisplayName("Неуспешная повторная регистрация уже зарегистрированного пользователя")
     void userReRegistrationTest() {
-        given()
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .body(authCorrectData)
-                .contentType(JSON)
-                .when()
-                .post("/Account/v1/User")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(406)
-                .body("code", is("1204"),
-                        "message", is("User exists!"));
+        CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
+                given(userSpec)
+                        .body(authCorrectData)
+                        .when()
+                        .post()
+                        .then()
+                        .spec(reRegDataResponseSpec)
+                        .extract().as(CodeMessageResponseModel.class));
+
+        step("Проверить ответ", () -> {
+            assertEquals("1204", response.getCode());
+            assertEquals("User exists!", response.getMessage());
+        });
     }
 
     @Test
     @DisplayName("Успешное добавление и удаление нового пользователя")
     void addAndDeleteUserTest() {
-        Response createResponse = given()
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .body(newUserData)
-                .contentType(JSON)
-                .when()
-                .post("/Account/v1/User")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(201)
-                .body("username", is(newUser))
-                .extract().response();
+        UserResponseModel regResponse = step("Отправить запрос на регистрацию нового пользователя", () ->
+                given(userSpec)
+                        .body(newUserData)
+                        .when()
+                        .post()
+                        .then()
+                        .spec(successfulRegResponseSpec)
+                        .extract().as(UserResponseModel.class));
 
-        userId = createResponse.path("userID");
+        step("Проверить регистрацию нового пользователя", () ->
+                assertEquals(newUserData.getUserName(), regResponse.getUsername()));
 
-        Response tokenResponse = given()
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .body(newUserData)
-                .contentType(JSON)
-                .when()
-                .post("/Account/v1/GenerateToken")
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(200)
-                .body("status", is("Success"))
-                .extract().response();
+        LoginResponseModel genTokenResponse = step("Отправить запрос на авторизацию", () ->
+                given(genTokenSpec)
+                        .body(newUserData)
+                        .when()
+                        .post()
+                        .then()
+                        .spec(loginResponseSpec)
+                        .extract().as(LoginResponseModel.class));
 
-        String token = tokenResponse.path("token");
+        step("Проверить ответ на авторизацию", () -> {
+            assertEquals("Success", genTokenResponse.getStatus());
+            assertEquals("User authorized successfully.", genTokenResponse.getResult());
+        });
 
-        given()
-                .log().uri()
-                .log().body()
-                .log().headers()
-                .header("Authorization", "Bearer " + token)
-                .contentType(JSON)
-                .when()
-                .delete("/Account/v1/User/" + userId)
-                .then()
-                .log().status()
-                .log().body()
-                .statusCode(204);
+        step("Отправить запрос на удаление", () ->
+                given(userSpec)
+                        .header("Authorization", "Bearer " + genTokenResponse.getToken())
+                        .when()
+                        .delete(regResponse.getUserID())
+                        .then()
+                        .spec(deleteUserResponseSpec));
+
+        CodeMessageResponseModel finalResponse = step("Отправить запрос на авторизацию удаленного пользователя", () ->
+                given(authSpec)
+                        .body(newUserData)
+                        .when()
+                        .post()
+                        .then()
+                        .spec(notFoundResponseSpec)
+                        .extract()
+                        .as(CodeMessageResponseModel.class));
+
+        step("Проверить ответ, что пользователь не найден", () -> {
+            assertEquals("1207", finalResponse.getCode());
+            assertEquals("User not found!", finalResponse.getMessage());
+        });
     }
 }
