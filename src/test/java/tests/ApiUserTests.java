@@ -1,15 +1,18 @@
 package tests;
 
+import io.qameta.allure.Owner;
 import io.restassured.response.Response;
 import models.LoginResponseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static helpers.CustomAllureListener.withCustomTemplates;
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Owner("sergeyglukhov")
 @DisplayName("API тесты с данными пользователей на DEMOQA")
 public class ApiUserTests extends BaseTest {
 
@@ -17,9 +20,12 @@ public class ApiUserTests extends BaseTest {
     @DisplayName("Успешная авторизация и получение токена")
     void successfulLoginWithTokenTest() {
         LoginResponseModel response = given()
+                .filter(withCustomTemplates())
+                .log().uri()
+                .log().body()
+                .log().headers()
                 .body(authCorrectData)
                 .contentType(JSON)
-                .log().uri()
                 .when()
                 .post("/Account/v1/GenerateToken")
                 .then()
@@ -36,16 +42,19 @@ public class ApiUserTests extends BaseTest {
     @DisplayName("Неуспешная авторизация")
     void unsuccessfulLoginWithTokenTest() {
         LoginResponseModel response = given()
+                .filter(withCustomTemplates())
+                .log().uri()
+                .log().body()
+                .log().headers()
                 .body(authIncorrectData)
                 .contentType(JSON)
-                .log().uri()
                 .when()
                 .post("/Account/v1/GenerateToken")
                 .then()
                 .log().status()
                 .log().body()
-                .statusCode(200).extract()
-                .as(LoginResponseModel.class);
+                .statusCode(200)
+                .extract().as(LoginResponseModel.class);
 
         assertEquals("Failed", response.getStatus());
         assertEquals("User authorization failed.", response.getResult());
@@ -55,9 +64,11 @@ public class ApiUserTests extends BaseTest {
     @DisplayName("Неуспешная авторизация отсутствующего пользователя")
     void userNotFoundTest() {
         given()
+                .log().uri()
+                .log().body()
+                .log().headers()
                 .body(authIncorrectData)
                 .contentType(JSON)
-                .log().uri()
                 .when()
                 .post("/Account/v1/Authorized")
                 .then()
@@ -72,9 +83,11 @@ public class ApiUserTests extends BaseTest {
     @DisplayName("Неуспешная авторизация с пустыми полями")
     void loginWithEmptyDataTest() {
         given()
+                .log().uri()
+                .log().body()
+                .log().headers()
                 .body(emptyData)
                 .contentType(JSON)
-                .log().uri()
                 .when()
                 .post("/Account/v1/Authorized")
                 .then()
@@ -89,9 +102,11 @@ public class ApiUserTests extends BaseTest {
     @DisplayName("Неуспешная повторная регистрация уже зарегистрированного пользователя")
     void userReRegistrationTest() {
         given()
+                .log().uri()
+                .log().body()
+                .log().headers()
                 .body(authCorrectData)
                 .contentType(JSON)
-                .log().uri()
                 .when()
                 .post("/Account/v1/User")
                 .then()
@@ -106,9 +121,11 @@ public class ApiUserTests extends BaseTest {
     @DisplayName("Успешное добавление и удаление нового пользователя")
     void addAndDeleteUserTest() {
         Response createResponse = given()
+                .log().uri()
+                .log().body()
+                .log().headers()
                 .body(newUserData)
                 .contentType(JSON)
-                .log().uri()
                 .when()
                 .post("/Account/v1/User")
                 .then()
@@ -121,9 +138,11 @@ public class ApiUserTests extends BaseTest {
         userId = createResponse.path("userID");
 
         Response tokenResponse = given()
+                .log().uri()
+                .log().body()
+                .log().headers()
                 .body(newUserData)
                 .contentType(JSON)
-                .log().uri()
                 .when()
                 .post("/Account/v1/GenerateToken")
                 .then()
@@ -136,9 +155,11 @@ public class ApiUserTests extends BaseTest {
         String token = tokenResponse.path("token");
 
         given()
+                .log().uri()
+                .log().body()
+                .log().headers()
                 .header("Authorization", "Bearer " + token)
                 .contentType(JSON)
-                .log().uri()
                 .when()
                 .delete("/Account/v1/User/" + userId)
                 .then()

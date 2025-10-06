@@ -1,5 +1,6 @@
 package tests;
 
+import io.qameta.allure.Owner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -7,6 +8,7 @@ import static io.restassured.RestAssured.get;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.is;
 
+@Owner("sergeyglukhov")
 @DisplayName("API тесты с данными книг на DEMOQA")
 public class ApiBookTests extends BaseTest {
 
