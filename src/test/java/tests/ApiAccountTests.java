@@ -14,7 +14,7 @@ import static specs.LoginSpec.*;
 
 @Owner("sergeyglukhov")
 @DisplayName("API тесты с данными пользователей на DEMOQA")
-public class ApiUserTests extends BaseTest {
+public class ApiAccountTests extends BaseTest {
 
     @Test
     @DisplayName("Успешная авторизация и получение токена")

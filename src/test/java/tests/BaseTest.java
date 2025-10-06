@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeAll;
 import java.util.List;
 
 public class BaseTest {
-    String
-            userId;
 
     LoginBodyModel
             authCorrectData = new LoginBodyModel("AlexTerrible", "Qwer!1234"),
@@ -30,6 +28,5 @@ public class BaseTest {
     @BeforeAll
     static void setUp() {
         RestAssured.baseURI = "https://demoqa.com/";
-        RestAssured.defaultParser = Parser.JSON;;
     }
 }
