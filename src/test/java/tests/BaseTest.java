@@ -27,6 +27,6 @@ public class BaseTest {
 
     @BeforeAll
     static void setUp() {
-        RestAssured.baseURI = "https://demoqa.com/";
+        RestAssured.baseURI = System.getProperty("baseUri");
     }
 }
