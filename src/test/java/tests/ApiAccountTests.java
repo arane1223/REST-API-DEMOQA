@@ -5,6 +5,7 @@ import models.CodeMessageResponseModel;
 import models.LoginResponseModel;
 import models.UserResponseModel;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static io.qameta.allure.Allure.step;
@@ -13,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static specs.LoginSpec.*;
 
 @Owner("sergeyglukhov")
+@Tag("api")
+@Tag("account")
 @DisplayName("API тесты с данными пользователей на DEMOQA")
 public class ApiAccountTests extends BaseTest {
 

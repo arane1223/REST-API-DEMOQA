@@ -5,6 +5,7 @@ import models.BookResponseModel;
 import models.BooksResponseModel;
 import models.CodeMessageResponseModel;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static specs.BookStoreSpec.*;
 
 @Owner("sergeyglukhov")
+@Tag("api")
+@Tag("bookStore")
 @DisplayName("API тесты с данными книг на DEMOQA")
 public class ApiBookStoreTests extends BaseTest {
 

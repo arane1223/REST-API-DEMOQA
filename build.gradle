@@ -51,5 +51,22 @@ tasks.withType(Test) {
             exceptionFormat "short"
         }
     }
+}
 
+task api_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("api")
+    }
+}
+
+task account_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("account")
+    }
+}
+
+task bookStore_test(type: Test) {
+    useJUnitPlatform {
+        includeTags("bookStore")
+    }
 }
