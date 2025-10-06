@@ -12,7 +12,7 @@ public class BaseTest {
     LoginBodyModel
             authCorrectData = new LoginBodyModel("AlexTerrible", "Qwer!1234"),
             authIncorrectData = new LoginBodyModel("AlexTerrible", "Qwer!"),
-            emptyData = new LoginBodyModel("",""),
+            emptyData = new LoginBodyModel("", ""),
             newUserData = new LoginBodyModel("newUser", "Qwer!1234");
 
     List<String> books = List.of(
