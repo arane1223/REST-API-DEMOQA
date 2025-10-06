@@ -166,4 +166,16 @@ public class ApiTests extends TestBase {
                         "publisher", is("O'Reilly Media"),
                         "pages", is(234));
     }
+
+    @Test
+    @DisplayName("Проверка отсутствия книги по ISBN")
+    void checkingBookNotFoundByIsbnTest() {
+        get("/BookStore/v1/Book?ISBN=978144932586")
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(400)
+                .body("code",is("1205"),
+                        "message", is("ISBN supplied is not available in Books Collection!"));
+    }
 }
