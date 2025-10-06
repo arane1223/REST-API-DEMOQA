@@ -1,9 +1,11 @@
+package tests;
+
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
 
 import java.util.List;
 
-public class TestBase {
+public class BaseTest {
     String
             authCorrectData = "{\"userName\": \"AlexTerrible\", \"password\": \"Qwer!1234\"}",
             authIncorrectData = "{\"userName\": \"AlexTerrible\", \"password\": \"Qwer!\"}",
