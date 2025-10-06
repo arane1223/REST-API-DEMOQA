@@ -1,12 +1,14 @@
 package tests;
 
 import io.restassured.response.Response;
+import models.LoginResponseModel;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.*;
 import static io.restassured.http.ContentType.JSON;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("API тесты с данными пользователей на DEMOQA")
 public class ApiUserTests extends BaseTest {
@@ -14,7 +16,7 @@ public class ApiUserTests extends BaseTest {
     @Test
     @DisplayName("Успешная авторизация и получение токена")
     void successfulLoginWithTokenTest() {
-        given()
+        LoginResponseModel response = given()
                 .body(authCorrectData)
                 .contentType(JSON)
                 .log().uri()
@@ -24,14 +26,16 @@ public class ApiUserTests extends BaseTest {
                 .log().status()
                 .log().body()
                 .statusCode(200)
-                .body("status", is("Success"),
-                        "result", is("User authorized successfully."));
+                .extract().as(LoginResponseModel.class);
+
+        assertEquals("Success", response.getStatus());
+        assertEquals("User authorized successfully.", response.getResult());
     }
 
     @Test
     @DisplayName("Неуспешная авторизация")
     void unsuccessfulLoginWithTokenTest() {
-        given()
+        LoginResponseModel response = given()
                 .body(authIncorrectData)
                 .contentType(JSON)
                 .log().uri()
@@ -40,9 +44,11 @@ public class ApiUserTests extends BaseTest {
                 .then()
                 .log().status()
                 .log().body()
-                .statusCode(200)
-                .body("status", is("Failed"),
-                        "result", is("User authorization failed."));
+                .statusCode(200).extract()
+                .as(LoginResponseModel.class);
+
+        assertEquals("Failed", response.getStatus());
+        assertEquals("User authorization failed.", response.getResult());
     }
 
     @Test
