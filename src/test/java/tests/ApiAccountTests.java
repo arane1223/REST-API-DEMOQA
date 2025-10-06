@@ -1,6 +1,8 @@
 package tests;
 
+import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
+import io.qameta.allure.Story;
 import models.CodeMessageResponseModel;
 import models.LoginResponseModel;
 import models.UserResponseModel;
@@ -16,11 +18,13 @@ import static specs.LoginSpec.*;
 @Owner("sergeyglukhov")
 @Tag("api")
 @Tag("account")
+@Feature("Работа с данными пользователей")
 @DisplayName("API тесты с данными пользователей на DEMOQA")
 public class ApiAccountTests extends BaseTest {
 
     @Test
-    @DisplayName("Успешная авторизация и получение токена")
+    @Story("Авторизация и получение токена")
+    @DisplayName("Успешная авторизация и получение токена с корректными данными")
     void successfulLoginWithTokenTest() {
         LoginResponseModel response = step("Отправить запрос на авторизацию", () ->
                 given(genTokenSpec)
@@ -38,7 +42,8 @@ public class ApiAccountTests extends BaseTest {
     }
 
     @Test
-    @DisplayName("Неуспешная авторизация")
+    @Story("Авторизация с некорретными данными")
+    @DisplayName("Неуспешная авторизация с некорректными данными")
     void unsuccessfulLoginWithTokenTest() {
         LoginResponseModel response = step("Отправить запрос на авторизацию", () ->
                 given(genTokenSpec)
@@ -56,7 +61,8 @@ public class ApiAccountTests extends BaseTest {
     }
 
     @Test
-    @DisplayName("Неуспешная авторизация отсутствующего пользователя")
+    @Story("Авторизация пользователя, которого нет в базе")
+    @DisplayName("Неуспешная авторизация отсутствующего пользователя в базе")
     void userNotFoundTest() {
         CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
                 given(authSpec)
@@ -74,7 +80,8 @@ public class ApiAccountTests extends BaseTest {
     }
 
     @Test
-    @DisplayName("Неуспешная авторизация с пустыми полями")
+    @Story("Авторизация с пустыми полями")
+    @DisplayName("Неуспешная авторизация с отправкой пустых полей")
     void loginWithEmptyDataTest() {
         CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
                 given(authSpec)
@@ -92,6 +99,7 @@ public class ApiAccountTests extends BaseTest {
     }
 
     @Test
+    @Story("Повторная регистрация")
     @DisplayName("Неуспешная повторная регистрация уже зарегистрированного пользователя")
     void userReRegistrationTest() {
         CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
@@ -110,6 +118,7 @@ public class ApiAccountTests extends BaseTest {
     }
 
     @Test
+    @Story("Добавление и удаление")
     @DisplayName("Успешное добавление и удаление нового пользователя")
     void addAndDeleteUserTest() {
         UserResponseModel regResponse = step("Отправить запрос на регистрацию нового пользователя", () ->
