@@ -1,10 +1,13 @@
 package tests;
 
+import io.qameta.allure.Feature;
 import io.qameta.allure.Owner;
+import io.qameta.allure.Story;
 import models.BookResponseModel;
 import models.BooksResponseModel;
 import models.CodeMessageResponseModel;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,10 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static specs.BookStoreSpec.*;
 
 @Owner("sergeyglukhov")
+@Tag("api")
+@Tag("bookStore")
+@Feature("Работа с данными книг")
 @DisplayName("API тесты с данными книг на DEMOQA")
 public class ApiBookStoreTests extends BaseTest {
 
     @Test
+    @Story("Проверка по названию")
     @DisplayName("Проверка библиотеки книг по названиям")
     void getUserAccountID() {
         BooksResponseModel response = step("Отправить запрос на получение списка книг", () ->
@@ -41,6 +48,7 @@ public class ApiBookStoreTests extends BaseTest {
     }
 
     @Test
+    @Story("Проверка данных книги")
     @DisplayName("Проверка характеристик книги по ISBN")
     void checkingBookCharacteristicsByIsbnTest() {
         BookResponseModel response = step("Отправить запрос на получение книги «Git Pocket Guide»", () ->
@@ -61,6 +69,7 @@ public class ApiBookStoreTests extends BaseTest {
     }
 
     @Test
+    @Story("Если книги нет в базе")
     @DisplayName("Проверка отсутствия книги по ISBN")
     void checkingBookNotFoundByIsbnTest() {
         CodeMessageResponseModel response = step("Отправить запрос на получение книги", () ->
