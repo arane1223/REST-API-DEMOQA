@@ -1,4 +1,4 @@
-# Проект по автоматизации UI тестирования на DEMOQA
+# Проект по автоматизации API тестирования на DEMOQA
 <a href="https://demoqa.com/"><img width="30%" title="DEMOQA" src="images/icons/Toolsqa.jpg"></a>
 
 ## :point_up: Структура:
