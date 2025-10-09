@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static data.TestData.*;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,8 +43,8 @@ public class ApiBookStoreTests extends BaseTest {
                     .map(BookResponseModel::getTitle)
                     .collect(Collectors.toList());
 
-            assertEquals(books.size(), response.getBooks().size());
-            assertEquals(books, actualTitles);
+            assertEquals(BOOKS.size(), response.getBooks().size());
+            assertEquals(BOOKS, actualTitles);
         });
     }
 
@@ -53,18 +54,18 @@ public class ApiBookStoreTests extends BaseTest {
     void checkingBookCharacteristicsByIsbnTest() {
         BookResponseModel response = step("Отправить запрос на получение книги «Git Pocket Guide»", () ->
                 given(getBookSpec)
-                        .get("?ISBN=9781449325862")
+                        .get(GIT_BOOK_ISBN)
                         .then()
                         .spec(booksResponseSpec)
                         .extract().as(BookResponseModel.class));
 
         step("Проверить характеристики книги", () -> {
-            assertEquals("Git Pocket Guide", response.getTitle());
-            assertEquals("A Working Introduction", response.getSubTitle());
-            assertEquals("Richard E. Silverman", response.getAuthor());
-            assertEquals("2020-06-04T08:48:39.000Z", response.getPublish_date());
-            assertEquals("O'Reilly Media", response.getPublisher());
-            assertEquals(234, response.getPages());
+            assertEquals(GIT_BOOK_TITLE, response.getTitle());
+            assertEquals(GIT_BOOK_SUB_TITLE, response.getSubTitle());
+            assertEquals(GIT_BOOK_AUTHOR, response.getAuthor());
+            assertEquals(GIT_BOOK_PUBLISH_DATE, response.getPublish_date());
+            assertEquals(GIT_BOOK_PUBLISHER, response.getPublisher());
+            assertEquals(GIT_BOOK_PAGES, response.getPages());
         });
     }
 
@@ -74,7 +75,7 @@ public class ApiBookStoreTests extends BaseTest {
     void checkingBookNotFoundByIsbnTest() {
         CodeMessageResponseModel response = step("Отправить запрос на получение книги", () ->
                 given(getBookSpec)
-                        .get("?ISBN=978144932586")
+                        .get(INCORRECT_ISBN)
                         .then()
                         .spec(bookNotFoundResponseSpec)
                         .extract().as(CodeMessageResponseModel.class));

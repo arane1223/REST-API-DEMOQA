@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import static data.TestData.*;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,7 +29,7 @@ public class ApiAccountTests extends BaseTest {
     void successfulLoginWithTokenTest() {
         LoginResponseModel response = step("Отправить запрос на авторизацию", () ->
                 given(genTokenSpec)
-                        .body(authCorrectData)
+                        .body(AUTH_CORRECT_DATA)
                         .when()
                         .post()
                         .then()
@@ -47,7 +48,7 @@ public class ApiAccountTests extends BaseTest {
     void unsuccessfulLoginWithTokenTest() {
         LoginResponseModel response = step("Отправить запрос на авторизацию", () ->
                 given(genTokenSpec)
-                        .body(authIncorrectData)
+                        .body(AUTH_INCORRECT_DATA)
                         .when()
                         .post()
                         .then()
@@ -66,7 +67,7 @@ public class ApiAccountTests extends BaseTest {
     void userNotFoundTest() {
         CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
                 given(authSpec)
-                        .body(authIncorrectData)
+                        .body(AUTH_INCORRECT_DATA)
                         .when()
                         .post()
                         .then()
@@ -85,7 +86,7 @@ public class ApiAccountTests extends BaseTest {
     void loginWithEmptyDataTest() {
         CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
                 given(authSpec)
-                        .body(emptyData)
+                        .body(EMPTY_DATA)
                         .when()
                         .post()
                         .then()
@@ -104,7 +105,7 @@ public class ApiAccountTests extends BaseTest {
     void userReRegistrationTest() {
         CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
                 given(userSpec)
-                        .body(authCorrectData)
+                        .body(AUTH_CORRECT_DATA)
                         .when()
                         .post()
                         .then()
@@ -123,7 +124,7 @@ public class ApiAccountTests extends BaseTest {
     void addAndDeleteUserTest() {
         UserResponseModel regResponse = step("Отправить запрос на регистрацию нового пользователя", () ->
                 given(userSpec)
-                        .body(newUserData)
+                        .body(NEW_USER_DATA)
                         .when()
                         .post()
                         .then()
@@ -131,11 +132,11 @@ public class ApiAccountTests extends BaseTest {
                         .extract().as(UserResponseModel.class));
 
         step("Проверить регистрацию нового пользователя", () ->
-                assertEquals(newUserData.getUserName(), regResponse.getUsername()));
+                assertEquals(NEW_USER_DATA.getUserName(), regResponse.getUsername()));
 
         LoginResponseModel genTokenResponse = step("Отправить запрос на авторизацию", () ->
                 given(genTokenSpec)
-                        .body(newUserData)
+                        .body(NEW_USER_DATA)
                         .when()
                         .post()
                         .then()
@@ -157,7 +158,7 @@ public class ApiAccountTests extends BaseTest {
 
         CodeMessageResponseModel finalResponse = step("Отправить запрос на авторизацию удаленного пользователя", () ->
                 given(authSpec)
-                        .body(newUserData)
+                        .body(NEW_USER_DATA)
                         .when()
                         .post()
                         .then()
