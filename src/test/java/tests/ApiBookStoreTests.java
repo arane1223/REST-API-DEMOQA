@@ -24,12 +24,12 @@ import static specs.BookStoreSpec.*;
 @Tag("bookStore")
 @Feature("Работа с данными книг")
 @DisplayName("API тесты с данными книг на DEMOQA")
-public class ApiBookStoreTests extends BaseTest {
+public class ApiBookStoreTests extends TestBase {
 
     @Test
     @Story("Проверка по названию")
     @DisplayName("Проверка библиотеки книг по названиям")
-    void getUserAccountID() {
+    void checkingBookListTest() {
         BooksResponseModel response = step("Отправить запрос на получение списка книг", () ->
                 given(getBooksSpec)
                         .get()

@@ -21,7 +21,7 @@ import static specs.LoginSpec.*;
 @Tag("account")
 @Feature("Работа с данными пользователей")
 @DisplayName("API тесты с данными пользователей на DEMOQA")
-public class ApiAccountTests extends BaseTest {
+public class ApiAccountTests extends TestBase {
 
     @Test
     @Story("Авторизация и получение токена")
