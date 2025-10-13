@@ -28,12 +28,12 @@ public class ApiAccountTests extends TestBase {
     @DisplayName("Успешная авторизация и получение токена с корректными данными")
     void successfulLoginWithTokenTest() {
         LoginResponseModel response = step("Отправить запрос на авторизацию", () ->
-                given(genTokenSpec)
+                given(baseReqSpec)
                         .body(AUTH_CORRECT_DATA)
                         .when()
-                        .post()
+                        .post("/Account/v1/GenerateToken")
                         .then()
-                        .spec(loginResponseSpec)
+                        .spec(baseRespSpec(200))
                         .extract().as(LoginResponseModel.class));
 
         step("Проверить ответ", () -> {
@@ -47,12 +47,12 @@ public class ApiAccountTests extends TestBase {
     @DisplayName("Неуспешная авторизация с некорректными данными")
     void unsuccessfulLoginWithTokenTest() {
         LoginResponseModel response = step("Отправить запрос на авторизацию", () ->
-                given(genTokenSpec)
+                given(baseReqSpec)
                         .body(AUTH_INCORRECT_DATA)
                         .when()
-                        .post()
+                        .post("/Account/v1/GenerateToken")
                         .then()
-                        .spec(loginResponseSpec)
+                        .spec(baseRespSpec(200))
                         .extract().as(LoginResponseModel.class));
 
         step("Проверить ответ", () -> {
@@ -66,12 +66,12 @@ public class ApiAccountTests extends TestBase {
     @DisplayName("Неуспешная авторизация отсутствующего пользователя в базе")
     void userNotFoundTest() {
         CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
-                given(authSpec)
+                given(baseReqSpec)
                         .body(AUTH_INCORRECT_DATA)
                         .when()
-                        .post()
+                        .post("/Account/v1/Authorized")
                         .then()
-                        .spec(notFoundResponseSpec)
+                        .spec(baseRespSpec(404))
                         .extract().as(CodeMessageResponseModel.class));
 
         step("Проверить ответ", () -> {
@@ -85,12 +85,12 @@ public class ApiAccountTests extends TestBase {
     @DisplayName("Неуспешная авторизация с отправкой пустых полей")
     void loginWithEmptyDataTest() {
         CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
-                given(authSpec)
+                given(baseReqSpec)
                         .body(EMPTY_DATA)
                         .when()
-                        .post()
+                        .post("/Account/v1/Authorized")
                         .then()
-                        .spec(emptyDataResponseSpec)
+                        .spec(baseRespSpec(400))
                         .extract().as(CodeMessageResponseModel.class));
 
         step("Проверить ответ", () -> {
@@ -104,12 +104,12 @@ public class ApiAccountTests extends TestBase {
     @DisplayName("Неуспешная повторная регистрация уже зарегистрированного пользователя")
     void userReRegistrationTest() {
         CodeMessageResponseModel response = step("Отправить запрос на авторизацию", () ->
-                given(userSpec)
+                given(baseReqSpec)
                         .body(AUTH_CORRECT_DATA)
                         .when()
-                        .post()
+                        .post("/Account/v1/User")
                         .then()
-                        .spec(reRegDataResponseSpec)
+                        .spec(baseRespSpec(406))
                         .extract().as(CodeMessageResponseModel.class));
 
         step("Проверить ответ", () -> {
@@ -123,24 +123,24 @@ public class ApiAccountTests extends TestBase {
     @DisplayName("Успешное добавление и удаление нового пользователя")
     void addAndDeleteUserTest() {
         UserResponseModel regResponse = step("Отправить запрос на регистрацию нового пользователя", () ->
-                given(userSpec)
+                given(baseReqSpec)
                         .body(NEW_USER_DATA)
                         .when()
-                        .post()
+                        .post("/Account/v1/User")
                         .then()
-                        .spec(successfulRegResponseSpec)
+                        .spec(baseRespSpec(201))
                         .extract().as(UserResponseModel.class));
 
         step("Проверить регистрацию нового пользователя", () ->
                 assertEquals(NEW_USER_DATA.getUserName(), regResponse.getUsername()));
 
         LoginResponseModel genTokenResponse = step("Отправить запрос на авторизацию", () ->
-                given(genTokenSpec)
+                given(baseReqSpec)
                         .body(NEW_USER_DATA)
                         .when()
-                        .post()
+                        .post("/Account/v1/GenerateToken")
                         .then()
-                        .spec(loginResponseSpec)
+                        .spec(baseRespSpec(200))
                         .extract().as(LoginResponseModel.class));
 
         step("Проверить ответ на авторизацию", () -> {
@@ -149,20 +149,20 @@ public class ApiAccountTests extends TestBase {
         });
 
         step("Отправить запрос на удаление", () ->
-                given(userSpec)
+                given(baseReqSpec)
                         .header("Authorization", "Bearer " + genTokenResponse.getToken())
                         .when()
-                        .delete(regResponse.getUserID())
+                        .delete("/Account/v1/User/" + regResponse.getUserID())
                         .then()
-                        .spec(deleteUserResponseSpec));
+                        .spec(baseRespSpec(204)));
 
         CodeMessageResponseModel finalResponse = step("Отправить запрос на авторизацию удаленного пользователя", () ->
-                given(authSpec)
+                given(baseReqSpec)
                         .body(NEW_USER_DATA)
                         .when()
-                        .post()
+                        .post("/Account/v1/Authorized")
                         .then()
-                        .spec(notFoundResponseSpec)
+                        .spec(baseRespSpec(404))
                         .extract()
                         .as(CodeMessageResponseModel.class));
 
