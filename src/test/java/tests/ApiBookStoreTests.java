@@ -24,17 +24,17 @@ import static specs.BookStoreSpec.*;
 @Tag("bookStore")
 @Feature("Работа с данными книг")
 @DisplayName("API тесты с данными книг на DEMOQA")
-public class ApiBookStoreTests extends BaseTest {
+public class ApiBookStoreTests extends TestBase {
 
     @Test
     @Story("Проверка по названию")
     @DisplayName("Проверка библиотеки книг по названиям")
-    void getUserAccountID() {
+    void checkingBookListTest() {
         BooksResponseModel response = step("Отправить запрос на получение списка книг", () ->
-                given(getBooksSpec)
-                        .get()
+                given(baseReqSpec)
+                        .get("/BookStore/v1/Books")
                         .then()
-                        .spec(booksResponseSpec)
+                        .spec(baseRespSpec(200))
                         .extract().as(BooksResponseModel.class));
 
         step("Проверить ответ, сравнить полученный список книг с заданным списком", () -> {
@@ -53,10 +53,10 @@ public class ApiBookStoreTests extends BaseTest {
     @DisplayName("Проверка характеристик книги по ISBN")
     void checkingBookCharacteristicsByIsbnTest() {
         BookResponseModel response = step("Отправить запрос на получение книги «Git Pocket Guide»", () ->
-                given(getBookSpec)
-                        .get(GIT_BOOK_ISBN)
+                given(baseReqSpec)
+                        .get("/BookStore/v1/Book" + GIT_BOOK_ISBN)
                         .then()
-                        .spec(booksResponseSpec)
+                        .spec(baseRespSpec(200))
                         .extract().as(BookResponseModel.class));
 
         step("Проверить характеристики книги", () -> {
@@ -74,10 +74,10 @@ public class ApiBookStoreTests extends BaseTest {
     @DisplayName("Проверка отсутствия книги по ISBN")
     void checkingBookNotFoundByIsbnTest() {
         CodeMessageResponseModel response = step("Отправить запрос на получение книги", () ->
-                given(getBookSpec)
-                        .get(INCORRECT_ISBN)
+                given(baseReqSpec)
+                        .get("/BookStore/v1/Book" + INCORRECT_ISBN)
                         .then()
-                        .spec(bookNotFoundResponseSpec)
+                        .spec(baseRespSpec(400))
                         .extract().as(CodeMessageResponseModel.class));
 
         step("Проверить ответ", () -> {

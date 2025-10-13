@@ -11,31 +11,18 @@ import static io.restassured.filter.log.LogDetail.STATUS;
 import static io.restassured.http.ContentType.JSON;
 
 public class BookStoreSpec {
-    public static RequestSpecification getBooksSpec = with()
+    public static RequestSpecification baseReqSpec = with()
             .filter(withCustomTemplates())
             .log().uri()
             .log().body()
             .log().headers()
-            .contentType(JSON)
-            .basePath("/BookStore/v1/Books");
+            .contentType(JSON);
 
-    public static RequestSpecification getBookSpec = with()
-            .filter(withCustomTemplates())
-            .log().uri()
-            .log().body()
-            .log().headers()
-            .contentType(JSON)
-            .basePath("/BookStore/v1/Book");
-
-    public static ResponseSpecification booksResponseSpec = new ResponseSpecBuilder()
-            .expectStatusCode(200)
-            .log(STATUS)
-            .log(BODY)
-            .build();
-
-    public static ResponseSpecification bookNotFoundResponseSpec = new ResponseSpecBuilder()
-            .expectStatusCode(400)
-            .log(STATUS)
-            .log(BODY)
-            .build();
+    public static ResponseSpecification baseRespSpec(int expectedStatusCode) {
+        return new ResponseSpecBuilder()
+                .expectStatusCode(expectedStatusCode)
+                .log(STATUS)
+                .log(BODY)
+                .build();
+    }
 }
