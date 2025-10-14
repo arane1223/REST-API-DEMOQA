@@ -10,7 +10,7 @@ import static io.restassured.filter.log.LogDetail.BODY;
 import static io.restassured.filter.log.LogDetail.STATUS;
 import static io.restassured.http.ContentType.JSON;
 
-public class BookStoreSpec {
+public class BaseSpecs {
     public static RequestSpecification baseReqSpec = with()
             .filter(withCustomTemplates())
             .log().uri()
