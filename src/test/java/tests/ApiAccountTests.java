@@ -14,7 +14,7 @@ import static data.TestData.*;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static specs.LoginSpec.*;
+import static specs.BaseSpecs.*;
 
 @Owner("sergeyglukhov")
 @Tag("api")

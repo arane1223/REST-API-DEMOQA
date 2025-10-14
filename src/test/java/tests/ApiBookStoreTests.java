@@ -17,7 +17,7 @@ import static data.TestData.*;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static specs.BookStoreSpec.*;
+import static specs.BaseSpecs.*;
 
 @Owner("sergeyglukhov")
 @Tag("api")
